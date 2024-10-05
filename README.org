@@ -1,5 +1,3 @@
 #+title: Orc Thinker's github pages blog generator
-
-* Orc Thinker's github pages blog generator
-This application allows the user to generate a whole github pages project.
+#+description: This application allows the user to generate a whole github pages project.
 More info will be shared once the project will be completed
