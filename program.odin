@@ -24,12 +24,7 @@ date :: struct {
     year,month,day:int
 }
 
-main :: proc() {
-    fullpath := ""
-    bf,paths := findFiles(fullpath, fullpath, {})
-    h,e := os.open("")
-    blogBasePath := ""
-    //This works
+getBlogPathsSortedByDate :: proc(paths: [dynamic]string, fullpath:string) -> [dynamic]blogInfo{
     blogInfos: [dynamic]blogInfo
     dateLineString := "#+date: "
     titleLineString := "#+title: "
@@ -37,7 +32,7 @@ main :: proc() {
     for item in paths {
         data,ok := os.read_entire_file(strings.concatenate({fullpath, item}))
         if !ok {
-            return
+            continue
         }
         defer delete(data, context.allocator)
 
@@ -71,15 +66,22 @@ main :: proc() {
             bInfo : blogInfo = {item, dateToSave}
             append(&blogInfos, bInfo)
         }
-        // os.write_entire_file(strings.concatenate({blogBasePath, item}), auto_cast transmute([]u8)textToWrite)
     }
-    //Find the whole structure -> create folders -> create files
+    slice.sort_by(blogInfos[:], orderByNewest)
+    return blogInfos
+}
+
+main :: proc() {
+    fullpath := ""
+    bf,paths := findFiles(fullpath, fullpath, {})
+    h,e := os.open("")
+    blogBasePath := ""
     //2 file hosting the whole blog list page
     //3 file hosting article page based on which all the article pages will be generated
-    writeIndexPage(strings.concatenate({blogBasePath, "indexuch.html"}), "./Pages/index.template.html", blogInfos)
-    copyCssFiles(blogBasePath, "./Stylesheets/site.css")
 
-    // slice.sort_by(blogInfos[:], orderByNewest)
+    blogInfos := getBlogPathsSortedByDate(paths, fullpath)
+    writeIndexPage(strings.concatenate({blogBasePath, "index.html"}), "./Pages/index.template.html", blogInfos)
+    copyCssFiles(blogBasePath, "./Stylesheets/site.css")
     fmt.println(blogInfos)
 }
 
