@@ -6,6 +6,7 @@ import "core:strings"
 import "core:time"
 import "core:strconv"
 import "core:slice"
+import "core:math"
 
 blogFolder :: struct {
     blogFolders: [dynamic] blogFolder,
@@ -16,8 +17,9 @@ blogFolder :: struct {
 blogInfo :: struct {
     path: string,
     date: date,
-    // title: string,
-    // author: string,
+    title: string,
+    author: string,
+    words: int,
 }
 
 date :: struct {
@@ -30,6 +32,7 @@ getBlogPathsSortedByDate :: proc(paths: [dynamic]string, fullpath:string) -> [dy
     titleLineString := "#+title: "
     authorLineString := "#+author: "
     for item in paths {
+        wordsInDocument := 0
         data,ok := os.read_entire_file(strings.concatenate({fullpath, item}))
         if !ok {
             continue
@@ -37,17 +40,19 @@ getBlogPathsSortedByDate :: proc(paths: [dynamic]string, fullpath:string) -> [dy
         defer delete(data, context.allocator)
 
         it := string(data)
-        index := 0
+        // index := 0
         dateToSave:date
         titleToSave:string = ""
         authorToSave:string = ""
         for line in strings.split_lines_iterator(&it) {
-            // if(strings.starts_with(line, titleLineString)){
-            //     titleToSave = string(line[len(titleLineString):])
-            // }
-            // if(strings.starts_with(line, authorLineString)){
-            //     authorToSave = string(line[len(authorLineString):])
-            // }
+            fmt.println(len(strings.split(line, " ")))
+            wordsInDocument = wordsInDocument + len(strings.split(line, " ")) + 1
+            if(strings.starts_with(line, titleLineString)){
+                titleToSave = strings.clone(line[len(titleLineString):])
+            }
+            if(strings.starts_with(line, authorLineString)){
+                authorToSave = strings.clone(line[len(authorLineString):])
+            }
             if(strings.starts_with(line, dateLineString)){
                 dateString := line[len(dateLineString):]
                 dateComponents :[]string = strings.split(dateString, "/")
@@ -55,15 +60,10 @@ getBlogPathsSortedByDate :: proc(paths: [dynamic]string, fullpath:string) -> [dy
                 date1 :date = {strconv.atoi(dateComponents[2]), strconv.atoi(dateComponents[0]), strconv.atoi(dateComponents[1])}
                 dateToSave = date1
             }
-            if index > 5{
-                break;
-            }
-            index+=1
         }
         if dateToSave != {0,0,0} {
-            fmt.println(titleToSave)
-            // bInfo : blogInfo = {item, dateToSave, titleToSave, authorToSave}
-            bInfo : blogInfo = {item, dateToSave}
+            fmt.println(wordsInDocument)
+            bInfo : blogInfo = {item, dateToSave, titleToSave, authorToSave, wordsInDocument}
             append(&blogInfos, bInfo)
         }
     }
@@ -114,17 +114,11 @@ writeIndexPage :: proc (path: string, templatesPath: string, blogInfos: [dynamic
             </article>
         `
         dateStr := fmt.ctprintf("%v/%v/%v", item.date.month, item.date.day, item.date.year)
-        timeToReadStr := "TTR"
-        authorStr := "OrcThinker"
         link := "link"
-        postItem:cstring = fmt.ctprintf(articleStr, item.path, dateStr, timeToReadStr, authorStr, link)
+
+        postItem:cstring = fmt.ctprintf(articleStr, item.title, dateStr, math.ceil(f16(item.words)/220), item.author, link)
         textToWrite = strings.concatenate({textToWrite, string(postItem)})
     }
-
-    // for item in postNumbers {
-    //     postItem:cstring = fmt.ctprintf("<div> %v </div>", item)
-    //     textToWrite = strings.concatenate({textToWrite, string(postItem)})
-    // }
 
     //Reading template
     data,ok := os.read_entire_file(templatesPath)
