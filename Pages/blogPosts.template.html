@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>OrcThinker | Geekier every day</title>
+  <!-- <title>PJsky | Nerdier each day</title> -->
+  <title>PJsky | Geekier every day</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="" />
   <link rel="stylesheet" type="text/css" href="stylesheets/site.css" />
@@ -31,18 +32,13 @@
     </ul>
   </nav>
   <div class="main-container">
-    <h1 class="header-one">Hello</h1>
-    <p>
-      I am the <b>Orc Thinker</b> and I am looking to better myself as a dev through writing this blog
-    </p>
-    <p>
-      Still I do hope you'll find sometning useful here
-    </p>
-    <div class="posts-conatiner">
-      {{BlogPosts}}
+   <div class="posts-conatiner">
+     {{BlogPosts}}
     </div>
-    <!-- <a href="./Blog" class="button-primary">More..</a> -->
-    {{moreBtnLink}}
+    <div class="button-container">
+        <!-- <a href="./Blog?page=1" class="button-primary">< Prev</a> -->
+        <!-- <a href="./Blog?page=2" class="button-primary">Next ></a> -->
+    </div>
   </div>
 </body>
 </html>

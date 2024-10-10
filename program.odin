@@ -26,6 +26,9 @@ date :: struct {
     year,month,day:int
 }
 
+fullpath := ""
+blogBasePath := ""
+
 getBlogPathsSortedByDate :: proc(paths: [dynamic]string, fullpath:string) -> [dynamic]blogInfo{
     blogInfos: [dynamic]blogInfo
     dateLineString := "#+date: "
@@ -72,15 +75,14 @@ getBlogPathsSortedByDate :: proc(paths: [dynamic]string, fullpath:string) -> [dy
 }
 
 main :: proc() {
-    fullpath := ""
+    isLocal := true
     bf,paths := findFiles(fullpath, fullpath, {})
-    h,e := os.open("")
-    blogBasePath := ""
     //2 file hosting the whole blog list page
     //3 file hosting article page based on which all the article pages will be generated
 
     blogInfos := getBlogPathsSortedByDate(paths, fullpath)
-    writeIndexPage(strings.concatenate({blogBasePath, "index.html"}), "./Pages/index.template.html", blogInfos)
+    writeIndexPage(strings.concatenate({blogBasePath, "index.html"}), "./Pages/index.template.html", blogInfos, isLocal)
+    writeBlogListPages(strings.concatenate({blogBasePath, "blog.html"}), "./Pages/blogPosts.template.html", blogInfos, isLocal)
     copyCssFiles(blogBasePath, "./Stylesheets/site.css")
     fmt.println(blogInfos)
 }
@@ -93,10 +95,15 @@ orderByNewest :: proc (a,b:blogInfo) -> bool {
 }
 
 
-
-writeIndexPage :: proc (path: string, templatesPath: string, blogInfos: [dynamic]blogInfo) {
+//At the start this is basically the same as writing index page
+//Will be a bit different due to the fact that it will render multiple pages
+writeBlogListPages :: proc (path: string, templatesPath: string, blogInfos: [dynamic]blogInfo, isLocal:bool) {
     //Prepping template data
     textToWrite: string
+
+    indexLogoLinkStr := string(fmt.ctprintf(`<a href="./%v">`, isLocal ? "index.html": ""))
+    indexLinkStr := string(fmt.ctprintf(`<a href="./%v">Home</a>`, isLocal ? "index.html": ""))
+    blogLinkStr := string(fmt.ctprintf(`<a href="./%v">Blog</a>`, isLocal ? "blog.html": "blog"))
 
     for item in blogInfos {
         articleStr := `
@@ -131,7 +138,90 @@ writeIndexPage :: proc (path: string, templatesPath: string, blogInfos: [dynamic
 
     it := string(data)
     for line in strings.split_lines_iterator(&it) {
-        if(strings.contains(line, "{{BlogPosts}}"))
+        if(strings.contains(line, "{{indexLogoLink}}"))
+        {
+            finalHtml = strings.concatenate({finalHtml, indexLogoLinkStr})
+        }
+        else if(strings.contains(line, "{{indexLink}}"))
+        {
+            finalHtml = strings.concatenate({finalHtml, indexLinkStr})
+        }
+        else if(strings.contains(line, "{{blogLink}}"))
+        {
+            finalHtml = strings.concatenate({finalHtml, blogLinkStr})
+        }
+        else if(strings.contains(line, "{{BlogPosts}}"))
+        {
+            finalHtml = strings.concatenate({finalHtml, textToWrite})
+        }
+        else{
+            finalHtml = strings.concatenate({finalHtml, line})
+        }
+        finalHtml = strings.concatenate({finalHtml, "\n"})
+    }
+
+    os.write_entire_file(path, auto_cast transmute([]u8)finalHtml)
+}
+
+writeIndexPage :: proc (path: string, templatesPath: string, blogInfos: [dynamic]blogInfo, isLocal: bool) {
+    //Prepping template data
+    textToWrite: string
+    articleStr := `
+        <article>
+            <header>%v</header>
+            <p>desc</p>
+            <footer>
+            <span>%v</span>
+            <hr>
+            <span>%v min</span>
+            <hr>
+            <span>%v</span>
+            </footer>
+            <a class="post-link" href="./%v"></a>
+        </article>
+    `
+
+    indexLogoLinkStr := string(fmt.ctprintf(`<a href="./%v">`, isLocal ? "index.html": ""))
+    indexLinkStr := string(fmt.ctprintf(`<a href="./%v">Home</a>`, isLocal ? "index.html": ""))
+    blogLinkStr := string(fmt.ctprintf(`<a href="./%v">Blog</a>`, isLocal ? "blog.html": "blog"))
+    moreBtnLinkStr := string(fmt.ctprintf(`<a href="./%v" class="button-primary">More..</a>`, isLocal ? "blog.html" : "blog"))
+
+    for item in blogInfos {
+        dateStr := fmt.ctprintf("%v/%v/%v", item.date.month, item.date.day, item.date.year)
+        link := isLocal ? "link.html" : "link"
+
+        postItem:cstring = fmt.ctprintf(articleStr, item.title, dateStr, math.ceil(f16(item.words)/220), item.author, link)
+        textToWrite = strings.concatenate({textToWrite, string(postItem)})
+    }
+
+    //Reading template
+    data,ok := os.read_entire_file(templatesPath)
+    if !ok {
+        return
+    }
+    defer delete(data, context.allocator)
+
+    finalHtml: string
+
+    it := string(data)
+    for line in strings.split_lines_iterator(&it) {
+        if(strings.contains(line, "{{moreBtnLink}}"))
+        {
+            finalHtml = strings.concatenate({finalHtml, moreBtnLinkStr})
+        }
+        else if(strings.contains(line, "{{indexLogoLink}}"))
+        {
+            finalHtml = strings.concatenate({finalHtml, indexLogoLinkStr})
+        }
+        else if(strings.contains(line, "{{indexLink}}"))
+        {
+            finalHtml = strings.concatenate({finalHtml, indexLinkStr})
+        }
+        else if(strings.contains(line, "{{blogLink}}"))
+        {
+            finalHtml = strings.concatenate({finalHtml, blogLinkStr})
+        }
+        else if(strings.contains(line, "{{BlogPosts}}"))
         {
             finalHtml = strings.concatenate({finalHtml, textToWrite})
         }

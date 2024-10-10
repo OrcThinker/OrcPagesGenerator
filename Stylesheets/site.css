@@ -29,12 +29,18 @@
     --sourcerer-text-one: #faf4c6;
     --sourcerer-text-two: #dbd49d;
     --sourcerer-bg: #171717;
+    --sourcerer-bg-light-one: #222;
+    --sourcerer-bg-light-two: #252525;
+    --sourcerer-bg-light-three: #454545;
 
     /* settings */
     /* --body-background: var(--tn-background); */
     /* --text-color-one: var(--tn-text-one); */
     /* --text-color-two: var(--moonlight-text-two); */
     --body-background: var(--sourcerer-bg);
+    --background-light-one: var(--sourcerer-bg-light-one);
+    --background-light-two: var(--sourcerer-bg-light-two);
+    --background-light-three: var(--sourcerer-bg-light-three);
     --text-color-one: var(--sourcerer-text-one);
     --text-color-two: var(--sourcerer-text-two);
     --main-font-family: Meslo;
@@ -83,7 +89,7 @@ blockquote:after {
 
 blockquote {
     border-left: 3px solid var(--text-color-one);
-    background: var(--tn-background-light-one);
+    background: var(--background-light-one);
 }
 
 blockquote > * {
@@ -96,7 +102,7 @@ code {
 
 pre {
     padding: 8px;
-    background: var(--tn-background-light-one);
+    background: var(--background-light-one);
     display: flex;
     justify-content: center;
 }
@@ -177,12 +183,14 @@ h1,h2,h3,b,header {
     color: var(--text-color-one);
 }
 
-.main-container > header-one {
-    text-align: center;
+.main-container > .header-one {
+    /* text-align: center; */
+    padding: 0 12px;
 }
 
 .main-container > p {
     font-size: 20px;
+    padding: 0 12px;
 }
 
 article {
@@ -190,15 +198,15 @@ article {
     display: flex;
     flex-direction: column;
     /* border: 2px solid var(--text-color-one); */
-    border: 2px solid var(--tn-background-light-three);
-    background: var(--tn-background-light-one);
+    border: 2px solid var(--background-light-three);
+    background: var(--background-light-one);
     border-radius: 6px;
     padding: 16px 24px;
-    margin: 24px 32px;
+    margin: 24px 4px;
 }
 
 article:hover{
-    background: var(--tn-background-light-two);
+    background: var(--background-light-two);
 }
 
 article > header {
