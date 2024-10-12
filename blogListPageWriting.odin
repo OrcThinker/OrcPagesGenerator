@@ -9,13 +9,8 @@ import "core:math"
 
 //At the start this is basically the same as writing index page
 //Will be a bit different due to the fact that it will render multiple pages
-writeBlogListPages :: proc (path: string, templatesPath: string, blogInfos: [dynamic]blogInfo, isLocal:bool) {
-    //Prepping template data
+writeBlogListPages :: proc (path: string, templatesPath: string, blogInfos: [dynamic]blogInfo) {
     textToWrite: string
-
-    indexLogoLinkStr := string(fmt.ctprintf(`<a href="./%v">`, isLocal ? "index.html": ""))
-    indexLinkStr := string(fmt.ctprintf(`<a href="./%v">Home</a>`, isLocal ? "index.html": ""))
-    blogLinkStr := string(fmt.ctprintf(`<a href="./%v">Blog</a>`, isLocal ? "blog.html": "blog"))
 
     for item in blogInfos {
         articleStr := `
@@ -50,19 +45,7 @@ writeBlogListPages :: proc (path: string, templatesPath: string, blogInfos: [dyn
 
     it := string(data)
     for line in strings.split_lines_iterator(&it) {
-        if(strings.contains(line, "{{indexLogoLink}}"))
-        {
-            finalHtml = strings.concatenate({finalHtml, indexLogoLinkStr})
-        }
-        else if(strings.contains(line, "{{indexLink}}"))
-        {
-            finalHtml = strings.concatenate({finalHtml, indexLinkStr})
-        }
-        else if(strings.contains(line, "{{blogLink}}"))
-        {
-            finalHtml = strings.concatenate({finalHtml, blogLinkStr})
-        }
-        else if(strings.contains(line, "{{BlogPosts}}"))
+        if(strings.contains(line, "{{blogPosts}}"))
         {
             finalHtml = strings.concatenate({finalHtml, textToWrite})
         }
@@ -71,6 +54,5 @@ writeBlogListPages :: proc (path: string, templatesPath: string, blogInfos: [dyn
         }
         finalHtml = strings.concatenate({finalHtml, "\n"})
     }
-
-    os.write_entire_file(path, auto_cast transmute([]u8)finalHtml)
+    writeContentWithLayout(path, layoutPath, finalHtml)
 }

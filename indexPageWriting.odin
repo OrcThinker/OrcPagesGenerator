@@ -8,7 +8,7 @@ import "core:slice"
 import "core:math"
 
 
-writeIndexPage :: proc (path: string, templatesPath: string, blogInfos: [dynamic]blogInfo, isLocal: bool) {
+writeIndexPage :: proc (path: string, templatesPath: string, blogInfos: [dynamic]blogInfo) {
     //Prepping template data
     textToWrite: string
     articleStr := `
@@ -26,9 +26,6 @@ writeIndexPage :: proc (path: string, templatesPath: string, blogInfos: [dynamic
         </article>
     `
 
-    indexLogoLinkStr := string(fmt.ctprintf(`<a href="./%v">`, isLocal ? "index.html": ""))
-    indexLinkStr := string(fmt.ctprintf(`<a href="./%v">Home</a>`, isLocal ? "index.html": ""))
-    blogLinkStr := string(fmt.ctprintf(`<a href="./%v">Blog</a>`, isLocal ? "blog.html": "blog"))
     moreBtnLinkStr := string(fmt.ctprintf(`<a href="./%v" class="button-primary">More..</a>`, isLocal ? "blog.html" : "blog"))
 
     for item in blogInfos {
@@ -54,19 +51,7 @@ writeIndexPage :: proc (path: string, templatesPath: string, blogInfos: [dynamic
         {
             finalHtml = strings.concatenate({finalHtml, moreBtnLinkStr})
         }
-        else if(strings.contains(line, "{{indexLogoLink}}"))
-        {
-            finalHtml = strings.concatenate({finalHtml, indexLogoLinkStr})
-        }
-        else if(strings.contains(line, "{{indexLink}}"))
-        {
-            finalHtml = strings.concatenate({finalHtml, indexLinkStr})
-        }
-        else if(strings.contains(line, "{{blogLink}}"))
-        {
-            finalHtml = strings.concatenate({finalHtml, blogLinkStr})
-        }
-        else if(strings.contains(line, "{{BlogPosts}}"))
+        else if(strings.contains(line, "{{blogPosts}}"))
         {
             finalHtml = strings.concatenate({finalHtml, textToWrite})
         }
@@ -76,5 +61,5 @@ writeIndexPage :: proc (path: string, templatesPath: string, blogInfos: [dynamic
         finalHtml = strings.concatenate({finalHtml, "\n"})
     }
 
-    os.write_entire_file(path, auto_cast transmute([]u8)finalHtml)
+    writeContentWithLayout(path, layoutPath, finalHtml)
 }

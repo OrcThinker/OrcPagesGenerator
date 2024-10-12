@@ -6,10 +6,10 @@ import "core:strings"
 import "core:strconv"
 import "core:slice"
 
-writeBlogPostContent :: proc (path:string, templatesPath: string, blogContent: string, isLocal: bool) {
+getBlogPostPageContent :: proc (templatesPath: string, blogContent: string) -> string {
     data,ok := os.read_entire_file(templatesPath)
     if !ok {
-        return
+        return ""
     }
     defer delete(data, context.allocator)
 
@@ -29,12 +29,15 @@ writeBlogPostContent :: proc (path:string, templatesPath: string, blogContent: s
         finalHtml = strings.concatenate({finalHtml, "\n"})
     }
 
-    os.write_entire_file(path, auto_cast transmute([]u8)finalHtml)
+    return finalHtml
+}
+
+writeBlogPostContent :: proc (path:string, orgPath:string, templatesPath: string) {
+    writeContentWithLayout(path, layoutPath, getBlogPostContent(orgPath, templatesPath))
 }
 
 
-
-getBlogPostContent :: proc (path:string, orgPath: string, templatesPath: string, blogInfos: [dynamic]blogInfo, isLocal: bool) -> string {
+getBlogPostContent :: proc (orgPath: string, templatesPath: string) -> string {
     postContent: string
 
     //Reading template
@@ -135,5 +138,4 @@ getBlogPostContent :: proc (path:string, orgPath: string, templatesPath: string,
     }
 
     return postContent
-    // os.write_entire_file(path, auto_cast transmute([]u8)finalHtml)
 }

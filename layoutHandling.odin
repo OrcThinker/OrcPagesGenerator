@@ -4,7 +4,7 @@ import "core:fmt"
 import "core:os"
 import "core:strings"
 
-getContentWithLayout :: proc (layoutPath: string, content: string, isLocal:bool) -> string {
+getContentWithLayout :: proc (layoutPath: string, content: string) -> string {
     indexLogoLinkStr := string(fmt.ctprintf(`<a href="./%v">`, isLocal ? "index.html": ""))
     indexLinkStr := string(fmt.ctprintf(`<a href="./%v">Home</a>`, isLocal ? "index.html": ""))
     blogLinkStr := string(fmt.ctprintf(`<a href="./%v">Blog</a>`, isLocal ? "blog.html": "blog"))
@@ -39,4 +39,8 @@ getContentWithLayout :: proc (layoutPath: string, content: string, isLocal:bool)
         finalHtml = strings.concatenate({finalHtml, "\n"})
     }
     return finalHtml
+}
+
+writeContentWithLayout :: proc (path:string, layoutPath: string, content: string) {
+    os.write_entire_file(path, auto_cast transmute([]u8)getContentWithLayout(layoutPath, content))
 }
