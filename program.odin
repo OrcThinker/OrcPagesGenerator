@@ -43,5 +43,9 @@ main :: proc() {
     writeIndexPage(strings.concatenate({blogBasePath, "index.html"}), "./Pages/index.template.html", blogInfos)
     writeBlogListPages(strings.concatenate({blogBasePath, "blog.html"}), "./Pages/blogPosts.template.html", blogInfos)
     copyCssFiles(blogBasePath, "./Stylesheets/site.css")
-    writeBlogPostContent(strings.concatenate({blogBasePath,"firstPost.html"}),"../SamplePost.org", "./Pages/post.template.html")
+    for item in blogInfos{
+        fmt.println(item.path)
+        pageName := strings.split(item.path, ".")[0]
+        writeBlogPostContent(strings.concatenate({blogBasePath,pageName, ".html"}),strings.concatenate({fullpath, item.path}), "./Pages/post.template.html")
+    }
 }
