@@ -34,11 +34,6 @@ isLocal := true
 main :: proc() {
     bf,paths := findFiles(fullpath, fullpath, {})
 
-    //Below writes index, listPage without proper links, article for 1 post based on path
-    //TODO
-    //Add proper Links to the articles
-    //Have proper naming for those articles
-    //Generate pages for all the org files in folder/array or something. Will have to think of how I want to add those .org files
     blogInfos := getBlogPathsSortedByDate(paths, fullpath)
     writeIndexPage(strings.concatenate({blogBasePath, "index.html"}), "./Pages/index.template.html", blogInfos)
     writeBlogListPages(strings.concatenate({blogBasePath, "blog.html"}), "./Pages/blogPosts.template.html", blogInfos)
