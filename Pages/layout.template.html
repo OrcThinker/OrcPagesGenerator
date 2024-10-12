@@ -7,38 +7,24 @@
   <meta name="description" content="" />
   <link rel="stylesheet" type="text/css" href="stylesheets/site.css" />
   <link rel="icon" href="images/orcThinkerIcon.png" />
-</head>
-<body>
+</head><body>
   <nav class="web-nav">
     <div class="website-logo">
-      <a href="./">
+        {{indexLogoLink}}
         <b>OrcThinker's</b> Geekier every day
       </a>
     </div>
     <ul>
       <li>
-        <a href="./">Home</a>
+        {{indexLink}}
       </li>
       <li>
-        <a href="./Blog">Blog</a>
-      </li>
-      <li>
-        <a href="./TestComponents">Test</a>
+        {{blogLink}}
       </li>
     </ul>
   </nav>
   <div class="main-container">
-    <h1 class="header-one">Hello</h1>
-    <p>
-      I am the <b>Orc Thinker</b> and I am looking to better myself as a dev through writing this blog
-    </p>
-    <p>
-      Still I do hope you'll find sometning useful here
-    </p>
-    <div class="posts-conatiner">
-
-    </div>
-    <a href="./Blog" class="button-primary">More..</a>
+     {{contentToRender}}
   </div>
 </body>
 </html>

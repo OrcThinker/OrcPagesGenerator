@@ -23,11 +23,27 @@ blogInfo :: struct {
 }
 
 date :: struct {
-    year,month,day:int
+    year,month,day: int
 }
 
 fullpath := ""
 blogBasePath := ""
+isLocal := true
+
+main :: proc() {
+    bf,paths := findFiles(fullpath, fullpath, {})
+    //2 file hosting the whole blog list page
+    //3 file hosting article page based on which all the article pages will be generated
+
+    blogInfos := getBlogPathsSortedByDate(paths, fullpath)
+    writeIndexPage(strings.concatenate({blogBasePath, "index.html"}), "./Pages/index.template.html", blogInfos, isLocal)
+    writeBlogListPages(strings.concatenate({blogBasePath, "blog.html"}), "./Pages/blogPosts.template.html", blogInfos, isLocal)
+    copyCssFiles(blogBasePath, "./Stylesheets/site.css")
+    fmt.println(blogInfos[2].title)
+    x := getBlogPostContent(blogBasePath, strings.concatenate({fullpath,"SamplePost.org"}), "./Pages/post.template.html", blogInfos, isLocal)
+    writeBlogPostContent(strings.concatenate({blogBasePath,"firstPost.html"}), "./Pages/post.template.html", x, isLocal)
+    // fmt.println(blogInfos)
+}
 
 getBlogPathsSortedByDate :: proc(paths: [dynamic]string, fullpath:string) -> [dynamic]blogInfo{
     blogInfos: [dynamic]blogInfo
@@ -48,7 +64,6 @@ getBlogPathsSortedByDate :: proc(paths: [dynamic]string, fullpath:string) -> [dy
         titleToSave:string = ""
         authorToSave:string = ""
         for line in strings.split_lines_iterator(&it) {
-            fmt.println(len(strings.split(line, " ")))
             wordsInDocument = wordsInDocument + len(strings.split(line, " ")) + 1
             if(strings.starts_with(line, titleLineString)){
                 titleToSave = strings.clone(line[len(titleLineString):])
@@ -65,7 +80,6 @@ getBlogPathsSortedByDate :: proc(paths: [dynamic]string, fullpath:string) -> [dy
             }
         }
         if dateToSave != {0,0,0} {
-            fmt.println(wordsInDocument)
             bInfo : blogInfo = {item, dateToSave, titleToSave, authorToSave, wordsInDocument}
             append(&blogInfos, bInfo)
         }
@@ -74,24 +88,49 @@ getBlogPathsSortedByDate :: proc(paths: [dynamic]string, fullpath:string) -> [dy
     return blogInfos
 }
 
-main :: proc() {
-    isLocal := true
-    bf,paths := findFiles(fullpath, fullpath, {})
-    //2 file hosting the whole blog list page
-    //3 file hosting article page based on which all the article pages will be generated
-
-    blogInfos := getBlogPathsSortedByDate(paths, fullpath)
-    writeIndexPage(strings.concatenate({blogBasePath, "index.html"}), "./Pages/index.template.html", blogInfos, isLocal)
-    writeBlogListPages(strings.concatenate({blogBasePath, "blog.html"}), "./Pages/blogPosts.template.html", blogInfos, isLocal)
-    copyCssFiles(blogBasePath, "./Stylesheets/site.css")
-    fmt.println(blogInfos)
-}
 
 orderByNewest :: proc (a,b:blogInfo) -> bool {
     x :blogInfo
     aTime,aOk := time.components_to_time(a.date.year,a.date.month,a.date.day,0,0,0,0)
     bTime,bOk := time.components_to_time(b.date.year,b.date.month,b.date.day,0,0,0,0)
     return aTime._nsec > bTime._nsec
+}
+
+getContentWithLayout :: proc (layoutPath: string, content: string, isLocal:bool) -> string {
+    indexLogoLinkStr := string(fmt.ctprintf(`<a href="./%v">`, isLocal ? "index.html": ""))
+    indexLinkStr := string(fmt.ctprintf(`<a href="./%v">Home</a>`, isLocal ? "index.html": ""))
+    blogLinkStr := string(fmt.ctprintf(`<a href="./%v">Blog</a>`, isLocal ? "blog.html": "blog"))
+    data,ok := os.read_entire_file(layoutPath)
+    if !ok {
+        return ""
+    }
+    defer delete(data, context.allocator)
+
+    finalHtml: string
+
+    it := string(data)
+    for line in strings.split_lines_iterator(&it) {
+        if(strings.contains(line, "{{indexLogoLink}}"))
+        {
+            finalHtml = strings.concatenate({finalHtml, indexLogoLinkStr})
+        }
+        else if(strings.contains(line, "{{indexLink}}"))
+        {
+            finalHtml = strings.concatenate({finalHtml, indexLinkStr})
+        }
+        else if(strings.contains(line, "{{blogLink}}"))
+        {
+            finalHtml = strings.concatenate({finalHtml, blogLinkStr})
+        }
+        else if(strings.contains(line, "{{contentToRender}}")){
+            finalHtml = strings.concatenate({finalHtml, content})
+        }
+        else{
+            finalHtml = strings.concatenate({finalHtml, line})
+        }
+        finalHtml = strings.concatenate({finalHtml, "\n"})
+    }
+    return finalHtml
 }
 
 
@@ -161,6 +200,139 @@ writeBlogListPages :: proc (path: string, templatesPath: string, blogInfos: [dyn
     }
 
     os.write_entire_file(path, auto_cast transmute([]u8)finalHtml)
+}
+
+
+writeBlogPostContent :: proc (path:string, templatesPath: string, blogContent: string, isLocal: bool) {
+    data,ok := os.read_entire_file(templatesPath)
+    if !ok {
+        return
+    }
+    defer delete(data, context.allocator)
+
+    finalHtml: string
+
+    it := string(data)
+    for line in strings.split_lines_iterator(&it) {
+        if(strings.contains(line, "{{postContent}}"))
+        {
+            finalHtml = strings.concatenate({finalHtml, blogContent})
+        }
+        else
+        {
+            finalHtml = strings.concatenate({finalHtml, line})
+        }
+        fmt.println(line)
+        finalHtml = strings.concatenate({finalHtml, "\n"})
+    }
+
+    os.write_entire_file(path, auto_cast transmute([]u8)finalHtml)
+}
+
+
+
+getBlogPostContent :: proc (path:string, orgPath: string, templatesPath: string, blogInfos: [dynamic]blogInfo, isLocal: bool) -> string {
+    postContent: string
+
+    //Reading template
+    data,ok := os.read_entire_file(orgPath)
+    if !ok {
+        return ""
+    }
+    defer delete(data, context.allocator)
+
+    finalHtml: string
+    listStarted, insideQuoteBlock, insideCodeBlock: bool
+    descStr := "#+description: "
+    authorStr := "#+author: "
+    titleStr := "#+title: "
+    dateStr := "#+date: "
+    beginQuoteStr := "#+begin_quote"
+    endQuoteStr := "#+end_quote"
+    beginSrcStr := "#+begin_src"
+    endSrcStr := "#+end_src"
+
+    it := string(data)
+    index := 0
+    for line in strings.split_lines_iterator(&it) {
+        index = index + 1
+        //If was list but isn't then close list
+        if !strings.starts_with(strings.to_lower(line), strings.to_lower("-")) && listStarted {
+            postContent = strings.concatenate({postContent, "</ul>"})
+            listStarted = false
+        }
+
+        if strings.starts_with(strings.to_lower(line), strings.to_lower("*")) {
+            lineText := strings.trim(line, " ")
+            lineText = strings.trim(line, "*")
+            lineElement := fmt.ctprintf("<h2>%v</h2>", lineText)
+            postContent = strings.concatenate({postContent, string(lineElement)})
+        }
+        else if strings.starts_with(strings.to_lower(line), strings.to_lower(descStr)) {
+            lineText := strings.trim(line, " ")
+            lineText = strings.trim(line, descStr)
+            lineElement := fmt.ctprintf("<p>%v</p>", lineText)
+            postContent = strings.concatenate({postContent, string(lineElement)})
+        }
+        else if strings.starts_with(strings.to_lower(line), strings.to_lower(authorStr)) {
+            lineText := strings.trim(line, " ")
+            lineText = strings.trim(line, authorStr)
+            //TODO: Add author element to the page
+            // lineElement := fmt.ctprintf("<p>%v</p>", lineText)
+            // postContent = strings.concatenate({postContent, string(lineElement)})
+        }
+        else if strings.starts_with(strings.to_lower(line), strings.to_lower(titleStr)) {
+            lineText := strings.trim(line, " ")
+            lineText = strings.trim(line, titleStr)
+            lineElement := fmt.ctprintf("<h1>%v</h1>", lineText)
+            postContent = strings.concatenate({postContent, string(lineElement)})
+        }
+        else if strings.starts_with(strings.to_lower(line), strings.to_lower(dateStr)) {
+        }
+        else if strings.starts_with(strings.to_lower(line), strings.to_lower(beginQuoteStr)) {
+            insideQuoteBlock = true
+            lineElement := "<blockquote>"
+            postContent = strings.concatenate({postContent, string(lineElement)})
+        }
+        else if strings.starts_with(strings.to_lower(line), strings.to_lower(endQuoteStr)) {
+            insideQuoteBlock = false
+            lineElement := "</blockquote>"
+            postContent = strings.concatenate({postContent, string(lineElement)})
+        }
+        else if strings.starts_with(strings.to_lower(line), strings.to_lower(beginSrcStr)) {
+            insideCodeBlock = true
+            lineElement := "<pre><code>"
+            postContent = strings.concatenate({postContent, string(lineElement)})
+        }
+        else if strings.starts_with(strings.to_lower(line), strings.to_lower(endSrcStr)) {
+            insideCodeBlock = false
+            lineElement := "</code></pre>"
+            postContent = strings.concatenate({postContent, string(lineElement)})
+        }
+        else if strings.starts_with(strings.to_lower(line), "#") {
+            //Do nothin for now
+        }
+        else if strings.starts_with(strings.to_lower(line), strings.to_lower("-")) {
+            if !listStarted {
+                listStarted = true
+                postContent = strings.concatenate({postContent, "<ul>"})
+            }
+            lineText := strings.trim(line, " ")
+            lineText = strings.trim(line, "-")
+            lineElement := fmt.ctprintf(`<li><a href="%v">%v</a></li>`, lineText, lineText)
+            postContent = strings.concatenate({postContent, string(lineElement)})
+        }
+        else {
+            //TODO: take depth of codeblock and adjust it
+            lineText := strings.trim(line, " ")
+            lineElement := fmt.ctprintf(`<p>%v</p>`, lineText)
+            postContent = strings.concatenate({postContent, string(lineElement)})
+        }
+
+    }
+
+    return postContent
+    // os.write_entire_file(path, auto_cast transmute([]u8)finalHtml)
 }
 
 writeIndexPage :: proc (path: string, templatesPath: string, blogInfos: [dynamic]blogInfo, isLocal: bool) {
