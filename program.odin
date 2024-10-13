@@ -26,8 +26,8 @@ date :: struct {
     year,month,day: int
 }
 
-fullpath := "C:\\Users\\Ramand\\Desktop\\rozkmina\\emacsRozkmina\\OrcThinkersBlogOrgFiles\\"
-blogBasePath := "C:\\Users\\Ramand\\Desktop\\rozkmina\\emacsRozkmina\\TestBlogGenerationSpot\\"
+fullpath := ""
+blogBasePath := ""
 layoutPath := "./Pages/layout.template.html"
 isLocal := true
 
