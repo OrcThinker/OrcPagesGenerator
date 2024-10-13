@@ -1,6 +1,7 @@
 #+title: Orc Thinker's github pages blog
 This application allows the user to generate a whole github pages project.
 More info will be shared once the project will be completed
+My pages generated with app: https://orcthinker.github.io/
 
 ** Premise behind the project
 GitHub pages is a free hosting of static .html pages. This application was made to automatically generate index / blogList pages together with a HTML page for each of the .org files in the specified folder.
