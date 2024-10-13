@@ -1,3 +1,28 @@
 #+title: Orc Thinker's github pages blog
 This application allows the user to generate a whole github pages project.
 More info will be shared once the project will be completed
+
+** Premise behind the project
+GitHub pages is a free hosting of static .html pages. This application was made to automatically generate index / blogList pages together with a HTML page for each of the .org files in the specified folder.
+
+Thanks to this project a person can simply write .org files and convert them into HTML files that are properly linked together
+
+** How it currently works
+In the main (program.odin) file there are 4 values that tell the application how to build the pages.
+- fullpath - tells where is the folder hosting org files
+- blogBasePath - tells where the github pages should be generated
+- layoutPath - tells the app which layout page we will be using (currently only one, was testing somthing with it)
+- isLocal - tells the application how to create navigation. If is local is true then the application will create links to the files so that they may be navigated and tested locally easier. When isLocal is false then the project is being created for the github pages with links that will work once deployed
+
+** Future steps (if neccessity arises)
+- Creating Folders for the files so that files with the same name exist
+- Pagination (multiple pages) for blogs list
+- Picking up files of a higher depth in file tree based on the fullpath
+
+** How to modify to use it for yourself
+Steps can be done in any order:
+- Set fullpath to where you keep your .org files
+- Set blogBasePath to where you want your files to be rendered (you can push those files to github and it should work)
+- Change layout.template.html in pages folder. This step is completely up to you. For now I have only 3 I inject into view. {{indexLogoLink}} creates <a href> opening tag for the text "logo". {{indexLink}} and {{blogLink}} create navigation links to home page and bloglist page respectively. If you want to modify this feel free to take a look at indexPageWriting.odin
+- build and run project ("odin run .")
+- to test locally use isLocal = true. Before create files for github pages deploy use isLocal = false

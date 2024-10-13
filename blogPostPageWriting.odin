@@ -25,15 +25,15 @@ getBlogPostPageContent :: proc (templatesPath: string, blogContent: string) -> s
         {
             finalHtml = strings.concatenate({finalHtml, line})
         }
-        fmt.println(line)
         finalHtml = strings.concatenate({finalHtml, "\n"})
     }
 
+    fmt.println(finalHtml)
     return finalHtml
 }
 
-writeBlogPostContent :: proc (path:string, orgPath:string, templatesPath: string) {
-    writeContentWithLayout(path, layoutPath, getBlogPostContent(orgPath, templatesPath))
+writeBlogPostContent :: proc (path:string, orgPath:string, templatesPath: string, layoutPath: string) {
+    writeContentWithLayout(path, layoutPath, getBlogPostPageContent(templatesPath,getBlogPostContent(orgPath, layoutPath)))
 }
 
 
@@ -131,8 +131,10 @@ getBlogPostContent :: proc (orgPath: string, templatesPath: string) -> string {
         else {
             //TODO: take depth of codeblock and adjust it
             lineText := strings.trim(line, " ")
-            lineElement := fmt.ctprintf(`<p>%v</p>`, lineText)
-            postContent = strings.concatenate({postContent, string(lineElement)})
+            if len(lineText) > 0 {
+                lineElement := fmt.ctprintf(`<p>%v</p>`, lineText)
+                postContent = strings.concatenate({postContent, string(lineElement)})
+            }
         }
 
     }

@@ -165,7 +165,7 @@ pre > code {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    max-width: 640px;
+    max-width: 764px;
     margin: auto;
     padding-top: 1vh;
 }
@@ -174,9 +174,9 @@ pre > code {
     max-width: 764px;
 }
 
-.main-container > p {
-    padding: ;
-}
+/* .main-container > p { */
+/*     padding: ; */
+/* } */
 
 h1,h2,h3,b,header {
     font-weight: bold;
@@ -192,6 +192,11 @@ h1,h2,h3,b,header {
     font-size: 20px;
     padding: 0 12px;
 }
+
+/* .main-container > .article-post-container > p { */
+/*     padding: 0; */
+/*     font-size: 18px; */
+/* } */
 
 article {
     position: relative;
