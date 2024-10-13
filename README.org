@@ -26,3 +26,10 @@ Steps can be done in any order:
 - Change layout.template.html in pages folder. This step is completely up to you. For now I have only 3 I inject into view. {{indexLogoLink}} creates <a href> opening tag for the text "logo". {{indexLink}} and {{blogLink}} create navigation links to home page and bloglist page respectively. If you want to modify this feel free to take a look at indexPageWriting.odin
 - build and run project ("odin run .")
 - to test locally use isLocal = true. Before create files for github pages deploy use isLocal = false
+
+** If I find it usefull
+If it so happens that this kind of application will feel good to use in the long run I may create another simple application that would allow user to customize the page without much programming knowledge
+I'd like to do the following then:
+- Create a website creator where you can view different style of components and color themes
+- Once everything would be chosen you would be able to download proper config file for the app
+- Then you would simply run the application .exe file without making the changes yourself and have yourself a simple blog to use for free in github pages service
