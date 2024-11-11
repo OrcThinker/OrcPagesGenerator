@@ -271,7 +271,7 @@ article > .post-link{
 .post-container > p{
     font-size: 16px;
     font-weight: 400;
-    margin: 0px;
+    /* margin: 0px; */
 }
 
 .post-container > h2 {
@@ -298,4 +298,9 @@ article > .post-link{
 
 a {
     color: var(--link-color);
+}
+
+img {
+    width: fit-content;
+    max-width: 100%;
 }

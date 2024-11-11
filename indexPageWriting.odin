@@ -14,7 +14,7 @@ writeIndexPage :: proc (path: string, templatesPath: string, blogInfos: [dynamic
     articleStr := `
         <article>
             <header>%v</header>
-            <p>desc</p>
+            <p>%v</p>
             <footer>
             <span>%v</span>
             <hr>
@@ -33,8 +33,9 @@ writeIndexPage :: proc (path: string, templatesPath: string, blogInfos: [dynamic
         // link := isLocal ? "link.html" : "link"
         link := strings.split(item.path, ".")[0]
         link = strings.concatenate({link,isLocal ? ".html" : ""})
+        desc := ""
 
-        postItem:cstring = fmt.ctprintf(articleStr, item.title, dateStr, math.ceil(f16(item.words)/220), item.author, link)
+        postItem:cstring = fmt.ctprintf(articleStr, item.title, desc, dateStr, math.ceil(f16(item.words)/220), item.author, link)
         textToWrite = strings.concatenate({textToWrite, string(postItem)})
     }
 

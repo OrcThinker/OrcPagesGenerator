@@ -28,22 +28,25 @@ getBlogPostPageContent :: proc (templatesPath: string, blogContent: string) -> s
         finalHtml = strings.concatenate({finalHtml, "\n"})
     }
 
-    fmt.println(finalHtml)
     return finalHtml
 }
 
-writeBlogPostContent :: proc (path:string, orgPath:string, templatesPath: string, layoutPath: string) {
-    writeContentWithLayout(path, layoutPath, getBlogPostPageContent(templatesPath,getBlogPostContent(orgPath, layoutPath)))
+writeBlogPostContent :: proc (path:string, orgPath:string, templatesPath: string, layoutPath: string) -> [dynamic]string {
+    postContent, imagesToCopy := getBlogPostContent(orgPath, layoutPath)
+    fmt.println(imagesToCopy)
+    writeContentWithLayout(path, layoutPath, getBlogPostPageContent(templatesPath,postContent))
+    return imagesToCopy
 }
 
 
-getBlogPostContent :: proc (orgPath: string, templatesPath: string) -> string {
+getBlogPostContent :: proc (orgPath: string, templatesPath: string) -> (string, [dynamic]string) {
     postContent: string
+    imagesToCopy: [dynamic]string
 
     //Reading template
     data,ok := os.read_entire_file(orgPath)
     if !ok {
-        return ""
+        return "", imagesToCopy
     }
     defer delete(data, context.allocator)
 
@@ -57,12 +60,15 @@ getBlogPostContent :: proc (orgPath: string, templatesPath: string) -> string {
     endQuoteStr := "#+end_quote"
     beginSrcStr := "#+begin_src"
     endSrcStr := "#+end_src"
+    imageStr := "[["
+    imageStrEnd := "]]"
 
     it := string(data)
     index := 0
     for line in strings.split_lines_iterator(&it) {
         index = index + 1
         //If was list but isn't then close list
+        line := strings.trim_left(line," ")
         if !strings.starts_with(strings.to_lower(line), strings.to_lower("-")) && listStarted {
             postContent = strings.concatenate({postContent, "</ul>"})
             listStarted = false
@@ -128,6 +134,14 @@ getBlogPostContent :: proc (orgPath: string, templatesPath: string) -> string {
             lineElement := fmt.ctprintf(`<li><a href="%v">%v</a></li>`, lineText, lineText)
             postContent = strings.concatenate({postContent, string(lineElement)})
         }
+        else if strings.starts_with(strings.to_lower(line), strings.to_lower(imageStr)) &&
+            strings.ends_with(strings.to_lower(line), strings.to_lower(imageStrEnd)) {
+            lineText := strings.trim(line, "]")
+            lineText = strings.trim(lineText, "[")
+            lineElement := fmt.ctprintf(`<img src="%v"/>`, lineText)
+            postContent = strings.concatenate({postContent, string(lineElement)})
+                append(&imagesToCopy, strings.clone(lineText))
+        }
         else {
             //TODO: take depth of codeblock and adjust it
             lineText := strings.trim(line, " ")
@@ -139,5 +153,5 @@ getBlogPostContent :: proc (orgPath: string, templatesPath: string) -> string {
 
     }
 
-    return postContent
+    return postContent, imagesToCopy
 }

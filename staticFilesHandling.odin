@@ -5,12 +5,12 @@ import "core:os"
 import "core:strings"
 
 filesToCopy: []string = {
-    "fonts/3270/3270MonoC.ttf",
-    "fonts/3270/3270MonoR.ttf",
-    "fonts/meslo/MesloBold.ttf",
-    "fonts/meslo/MesloRegular.ttf",
-    "images/orcThinkerIcon.png",
-    "stylesheets/site.css"
+    "./fonts/3270/3270MonoC.ttf",
+    "./fonts/3270/3270MonoR.ttf",
+    "./fonts/meslo/MesloBold.ttf",
+    "./fonts/meslo/MesloRegular.ttf",
+    "./images/orcThinkerIcon.png",
+    "./stylesheets/site.css"
 }
 
 copyStaticFiles :: proc (basePath: string) {
@@ -19,8 +19,8 @@ copyStaticFiles :: proc (basePath: string) {
     }
 }
 
-copyStaticFile :: proc (basePath: string, staticFileLocation: string) {
-    data,ok := os.read_entire_file(strings.concatenate({"./",staticFileLocation}))
+copyStaticFile :: proc (basePath: string, staticFileLocation: string, isFullPath: bool = false) {
+    data,ok := os.read_entire_file(staticFileLocation)
     if !ok {
         fmt.println("not ok")
         fmt.println(staticFileLocation)
@@ -28,6 +28,19 @@ copyStaticFile :: proc (basePath: string, staticFileLocation: string) {
     }
 
     os.write_entire_file(strings.concatenate({basePath, "\\", staticFileLocation}), data)
+    delete(data, context.allocator)
+}
+
+copyImage :: proc (targetPath: string, imageProjectPath: string, imageFilePath: string) {
+    imageFullPath := strings.concatenate({imageProjectPath, "\\", imageFilePath})
+    data,ok := os.read_entire_file(imageFullPath)
+    if !ok {
+        fmt.println("not ok")
+        fmt.println(imageFullPath)
+        return
+    }
+
+    os.write_entire_file(strings.concatenate({targetPath, "\\", imageFilePath}), data)
     delete(data, context.allocator)
 }
 
