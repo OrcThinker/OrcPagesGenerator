@@ -10,7 +10,8 @@ filesToCopy: []string = {
     "./fonts/meslo/MesloBold.ttf",
     "./fonts/meslo/MesloRegular.ttf",
     "./images/orcThinkerIcon.png",
-    "./stylesheets/site.css"
+    "./stylesheets/site.css",
+    "./generator.html"
 }
 
 copyStaticFiles :: proc (basePath: string) {

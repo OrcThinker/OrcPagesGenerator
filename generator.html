@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>OrcThinker | Geekier every day</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="" />
+  <link rel="stylesheet" type="text/css" href="stylesheets/site.css" />
+  <link rel="icon" href="images/orcThinkerIcon.png" />
+</head><body>
+ </body>
+</html>
+<script>
+  var colorThemes = ["#000", "#333", "#666", "#999", "#aaa","#bbb","#ccc","#ddd"]
+  var curColorThemeId = 0
+  let recolor = (pickerElement, cssVariableName) => {
+    var bgPickerColor = pickerElement.value
+    var r = document.querySelector(':root');
+    r.style.setProperty(cssVariableName, bgPickerColor)
+  }
+
+  let changeLogoText = (textNr, textElement) => {
+      let elementToChange;
+      if(textNr === 1)
+          elementToChange = document.querySelector("#text-one")
+      if(textNr === 2)
+          elementToChange = document.querySelector("#text-two")
+      if(textNr === 3)
+          elementToChange = document.querySelector("#text-header")
+      if(textNr === 4)
+          elementToChange = document.querySelector("#text-body")
+
+        elementToChange.innerHTML = textElement.value
+          
+  }
+
+  let mainPage = `
+  <nav class="web-nav">
+    <div class="website-logo">
+<a href="./index.html">
+        <b id="text-one">OrcThinker's</b>
+        <span id="text-two">Geekier every day</span>
+      </a>
+    </div>
+    <ul>
+      <li>
+<a href="./index.html">Home</a>
+      </li>
+      <li>
+<a href="./blog.html">Blog</a>
+      </li>
+    </ul>
+  </nav>
+  <div class="style-menu">
+    <div class="style-menu-holder">
+      <span class="picker-holder">
+        <label for="body-background-color-picker">Background color </label>
+        <input type="color" oninput="recolor(this, '--body-background')" id="body-background-color-picker" name="light-one-color-picker" value="#171717">
+      </span>
+      <span class="picker-holder">
+        <label for="light-one-color-picker">Background lighter one </label>
+        <input type="color" oninput="recolor(this, '--background-light-one')" id="light-one-color-picker" name="light-one-color-picker" value="#222">
+      </span>
+      <span class="picker-holder">
+        <label for="light-two-color-picker">Background lighter two </label>
+        <input type="color" oninput="recolor(this, '--background-light-two')" id="light-two-color-picker" name="light-two-color-picker" value="#252525">
+      </span>
+      <span class="picker-holder">
+        <label for="light-three-color-picker">Background lighter three </label>
+        <input type="color" oninput="recolor(this, '--background-light-three')" id="light-three-color-picker" name="light-three-color-picker" value="#454545">
+      </span>
+      <span class="picker-holder">
+        <label for="text-color-one-picker">Text color light </label>
+        <input type="color" oninput="recolor(this, '--text-color-one')" id="text-color-one-picker" name="text-color-one-picker" value="#faf4c6">
+      </span>
+      <span class="picker-holder">
+        <label for="text-color-two-picker">Text color normal </label>
+        <input type="color" oninput="recolor(this, '--text-color-two')" id="text-color-two-picker" name="text-color-two-picker" value="##dbd49d">
+      </span>
+      <span class="picker-holder">
+        <label for="logo-text-one-input">Logo text one</label>
+        <input type="text" id="logo-text-one-input" oninput="changeLogoText(1, this)">
+      </span>
+      <span class="picker-holder">
+        <label for="logo-text-two-input">Logo text two</label>
+        <input type="text" id="logo-text-two-input" oninput="changeLogoText(2, this)">
+      </span>
+      <span class="picker-holder">
+        <label for="header-text-input">Header text</label>
+        <input type="text" id="header-text-input" oninput="changeLogoText(3, this)">
+      </span>
+      <span class="picker-holder">
+        <label for="body-text-input">Body text</label>
+        <textarea id="body-text-input" oninput="changeLogoText(4, this)"></textarea>
+      </span>
+      <span class="picker-holder">
+        <label for="load-main">Body text</label>
+        <button id="load-main" onclick="loadMainPage()">Load main</button>
+      </span>
+      <span class="picker-holder">
+        <label for="load-sample">Body text</label>
+        <button id="load-sample" onclick="loadSamplePage()">Load sample</button>
+      </span>
+    </div>
+  </div>
+  <div class="main-container">
+   <h1 class="header-one" id="text-header">Hello</h1>
+    <p id="text-body">
+      I am the <b>Orc Thinker</b> and I am looking to better myself as a dev through writing this blog
+    </p>
+    <div class="posts-conatiner">
+
+        <article>
+            <header>Why Blog?</header>
+            <p>desc</p>
+            <footer>
+            <span>10/20/2024</span>
+            <hr>
+            <span>4 min</span>
+            <hr>
+            <span>OrcThinker</span>
+            </footer>
+            <a class="post-link" href="./WhyBlog.html"></a>
+        </article>
+
+        <article>
+            <header>Isometric Map</header>
+            <p>desc</p>
+            <footer>
+            <span>9/1/2024</span>
+            <hr>
+            <span>2 min</span>
+            <hr>
+            <span>OrcThinker</span>
+            </footer>
+            <a class="post-link" href="./IsometricMap.html"></a>
+        </article>
+
+        <article>
+            <header>Sample</header>
+            <p>desc</p>
+            <footer>
+            <span>9/1/2024</span>
+            <hr>
+            <span>9 min</span>
+            <hr>
+            <span>PJsky</span>
+            </footer>
+            <a class="post-link" href="./SamplePost.html"></a>
+        </article>
+
+    </div>
+<a href="./blog.html" class="button-primary">More..</a>
+
+  </div>
+  `
+let samplePostPage = `
+  <nav class="web-nav">
+    <div class="website-logo">
+<a href="./index.html">
+        <b>OrcThinker's</b> Geekier every day
+      </a>
+    </div>
+    <ul>
+      <li>
+<a href="./index.html">Home</a>
+      </li>
+      <li>
+<a href="./blog.html">Blog</a>
+      </li>
+    </ul>
+  </nav>
+  <div class="style-menu">
+    <div class="style-menu-holder">
+      <span class="picker-holder">
+        <label for="body-background-color-picker">Background color </label>
+        <input type="color" oninput="recolor(this, '--body-background')" id="body-background-color-picker" name="light-one-color-picker" value="#171717">
+      </span>
+      <span class="picker-holder">
+        <label for="light-one-color-picker">Background lighter one </label>
+        <input type="color" oninput="recolor(this, '--background-light-one')" id="light-one-color-picker" name="light-one-color-picker" value="#222">
+      </span>
+      <span class="picker-holder">
+        <label for="light-two-color-picker">Background lighter two </label>
+        <input type="color" oninput="recolor(this, '--background-light-two')" id="light-two-color-picker" name="light-two-color-picker" value="#252525">
+      </span>
+      <span class="picker-holder">
+        <label for="light-three-color-picker">Background lighter three </label>
+        <input type="color" oninput="recolor(this, '--background-light-three')" id="light-three-color-picker" name="light-three-color-picker" value="#454545">
+      </span>
+      <span class="picker-holder">
+        <label for="text-color-one-picker">Text color light </label>
+        <input type="color" oninput="recolor(this, '--text-color-one')" id="text-color-one-picker" name="text-color-one-picker" value="#faf4c6">
+      </span>
+      <span class="picker-holder">
+        <label for="text-color-two-picker">Text color normal </label>
+        <input type="color" oninput="recolor(this, '--text-color-two')" id="text-color-two-picker" name="text-color-two-picker" value="##dbd49d">
+      </span>
+      <span class="picker-holder">
+        <label for="logo-text-one-input">Logo text one</label>
+        <input type="text" id="logo-text-one-input" oninput="changeLogoText(1, this)">
+      </span>
+      <span class="picker-holder">
+        <label for="logo-text-two-input">Logo text two</label>
+        <input type="text" id="logo-text-two-input" oninput="changeLogoText(2, this)">
+      </span>
+      <span class="picker-holder">
+        <label for="header-text-input">Header text</label>
+        <input type="text" id="header-text-input" oninput="changeLogoText(3, this)">
+      </span>
+      <span class="picker-holder">
+        <label for="body-text-input">Body text</label>
+        <textarea id="body-text-input" oninput="changeLogoText(4, this)"></textarea>
+      </span>
+      <span class="picker-holder">
+        <label for="load-main">Body text</label>
+        <button id="load-main" onclick="loadMainPage()">Load main</button>
+      </span>
+      <span class="picker-holder">
+        <label for="load-sample">Body text</label>
+        <button id="load-sample" onclick="loadSamplePage()">Load sample</button>
+      </span>
+    </div>
+  </div>
+  <div class="main-container">
+ <div class="post-container">
+<h1>Samp</h1><p>Post created to test the autogeneration and allow making html page desig</p><h2> This is a test post Article NR. 1</h2><p>In this particular article I'd like to test Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed placerat imperdiet ligula sed imperdiet. Aliquam id ante dignissim, accumsan nisi sit amet, faucibus est. Praesent efficitur nibh at varius euismod. Donec vitae viverra nisi, placerat vehicula turpis. Phasellus pharetra pharetra lectus sed feugiat. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Donec tristique at nisl ut placerat. Etiam tempor hendrerit lacinia. Integer in nisl leo. Praesent magna nunc, egestas sit amet elit malesuada, consequat iaculis ipsum. Phasellus vel maximus urna, quis mollis justo. In interdum ligula eros, at elementum elit malesuada at.</p><p>In et volutpat nunc. Aliquam congue risus efficitur mi ultrices, sit amet elementum libero sagittis. Nunc efficitur eros eget leo dictum, sed viverra lorem tristique. Nullam aliquet ut arcu in faucibus. Etiam justo turpis, ultricies sit amet ex non, consequat rutrum velit. Aenean eu egestas nisl. Morbi sed lobortis enim.</p><blockquote><p>THIS IS A QUOTE FELLAS</p></blockquote><p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec scelerisque fringilla gravida. Morbi dictum mauris a arcu rutrum sollicitudin. Morbi quis metus non nunc commodo molestie semper et mauris. Sed nunc ligula, varius suscipit lacinia et, tempus ac ipsum. Phasellus a felis tempus, varius risus eget, dictum nisl. Vestibulum varius mauris quis orci sollicitudin malesuada. Donec imperdiet tincidunt felis at scelerisque. Nunc nibh mauris, elementum at purus et, aliquet iaculis metus. Praesent placerat id arcu efficitur tempus. Fusce eleifend accumsan libero at pretium. Ut pharetra velit non nisi luctus, nec laoreet nunc egestas. Mauris ut elementum libero. Cras ut erat rhoncus purus faucibus malesuada non vitae dui. Ut eu quam placerat felis sagittis venenatis. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p><pre><code><p>app.MapGet("/", async (HttpContext httpContext, BlogDbContext dbContext) =></p><p>{</p><p>var blogsPosts = dbContext.Blogs</p><p>.OrderByDescending(b => b.PostedAt)</p><p>.Take(2).Select(a => BlogArticleShort.FromModel(a)).ToList();</p><p>return await ScribanHelper.RenderScribanPage("Index", blogsPosts.ToArray());</p><p>});</p></code></pre><p>Pellentesque bibendum lorem at luctus rutrum. Donec id orci mi. Mauris vel nibh ornare, efficitur magna et, vehicula justo. Donec malesuada dui nec dolor rutrum molestie. Duis ut ornare lectus, ut finibus dui. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Vestibulum non sem tellus. Nulla ut odio sed ligula euismod venenatis eu vel quam. Curabitur porttitor tellus est, eget tincidunt enim tristique sed. Maecenas aliquet volutpat sollicitudin.</p><p>Sed tincidunt eleifend erat ac iaculis. Aliquam interdum interdum eros eu aliquam. Sed lacinia congue aliquet. Cras vitae orci vitae diam congue tempus ornare nec justo. Sed imperdiet semper justo et dignissim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Maecenas sed leo pretium erat mattis dapibus. Nam eget sollicitudin ex, at egestas magna. Quisque sollicitudin, augue vitae sagittis cursus, nulla justo sollicitudin tellus, in feugiat lorem est quis sem. Etiam quis lacinia nulla. Fusce congue pulvinar dui eget ornare. Phasellus cursus condimentum faucibus. Sed sollicitudin, lectus ut rutrum feugiat, risus ligula pulvinar nunc, ac aliquam nibh nibh eu nunc. Ut aliquet at nibh sed ultricies. Sed nulla eros, placerat eget finibus vel, pellentesque convallis nulla. Sed finibus nisi enim, nec finibus velit ullamcorper nec.</p><h2> This is a test post article NR. 2</h2><p>In this particular article I'd like to test Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed placerat imperdiet ligula sed imperdiet. Aliquam id ante dignissim, accumsan nisi sit amet, faucibus est. Praesent efficitur nibh at varius euismod. Donec vitae viverra nisi, placerat vehicula turpis. Phasellus pharetra pharetra lectus sed feugiat. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Donec tristique at nisl ut placerat. Etiam tempor hendrerit lacinia. Integer in nisl leo. Praesent magna nunc, egestas sit amet elit malesuada, consequat iaculis ipsum. Phasellus vel maximus urna, quis mollis justo. In interdum ligula eros, at elementum elit malesuada at.</p><p>In et volutpat nunc. Aliquam congue risus efficitur mi ultrices, sit amet elementum libero sagittis. Nunc efficitur eros eget leo dictum, sed viverra lorem tristique. Nullam aliquet ut arcu in faucibus. Etiam justo turpis, ultricies sit amet ex non, consequat rutrum velit. Aenean eu egestas nisl. Morbi sed lobortis enim.</p><blockquote><p>THIS IS A QUOTE FELLAS</p></blockquote><p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec scelerisque fringilla gravida. Morbi dictum mauris a arcu rutrum sollicitudin. Morbi quis metus non nunc commodo molestie semper et mauris. Sed nunc ligula, varius suscipit lacinia et, tempus ac ipsum. Phasellus a felis tempus, varius risus eget, dictum nisl. Vestibulum varius mauris quis orci sollicitudin malesuada. Donec imperdiet tincidunt felis at scelerisque. Nunc nibh mauris, elementum at purus et, aliquet iaculis metus. Praesent placerat id arcu efficitur tempus. Fusce eleifend accumsan libero at pretium. Ut pharetra velit non nisi luctus, nec laoreet nunc egestas. Mauris ut elementum libero. Cras ut erat rhoncus purus faucibus malesuada non vitae dui. Ut eu quam placerat felis sagittis venenatis. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p><pre><code><p><body></p></code></pre><p>Pellentesque bibendum lorem at luctus rutrum. Donec id orci mi. Mauris vel nibh ornare, efficitur magna et, vehicula justo. Donec malesuada dui nec dolor rutrum molestie. Duis ut ornare lectus, ut finibus dui. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Vestibulum non sem tellus. Nulla ut odio sed ligula euismod venenatis eu vel quam. Curabitur porttitor tellus est, eget tincidunt enim tristique sed. Maecenas aliquet volutpat sollicitudin.</p><p>Sed tincidunt eleifend erat ac iaculis. Aliquam interdum interdum eros eu aliquam. Sed lacinia congue aliquet. Cras vitae orci vitae diam congue tempus ornare nec justo. Sed imperdiet semper justo et dignissim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Maecenas sed leo pretium erat mattis dapibus. Nam eget sollicitudin ex, at egestas magna. Quisque sollicitudin, augue vitae sagittis cursus, nulla justo sollicitudin tellus, in feugiat lorem est quis sem. Etiam quis lacinia nulla. Fusce congue pulvinar dui eget ornare. Phasellus cursus condimentum faucibus. Sed sollicitudin, lectus ut rutrum feugiat, risus ligula pulvinar nunc, ac aliquam nibh nibh eu nunc. Ut aliquet at nibh sed ultricies. Sed nulla eros, placerat eget finibus vel, pellentesque convallis nulla. Sed finibus nisi enim, nec finibus velit ullamcorper nec.</p><h2> Nr. 3</h2><p>In this particular article I'd like to test Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed placerat imperdiet ligula sed imperdiet. Aliquam id ante dignissim, accumsan nisi sit amet, faucibus est. Praesent efficitur nibh at varius euismod. Donec vitae viverra nisi, placerat vehicula turpis. Phasellus pharetra pharetra lectus sed feugiat. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Donec tristique at nisl ut placerat. Etiam tempor hendrerit lacinia. Integer in nisl leo. Praesent magna nunc, egestas sit amet elit malesuada, consequat iaculis ipsum. Phasellus vel maximus urna, quis mollis justo. In interdum ligula eros, at elementum elit malesuada at.</p><p>In et volutpat nunc. Aliquam congue risus efficitur mi ultrices, sit amet elementum libero sagittis. Nunc efficitur eros eget leo dictum, sed viverra lorem tristique. Nullam aliquet ut arcu in faucibus. Etiam justo turpis, ultricies sit amet ex non, consequat rutrum velit. Aenean eu egestas nisl. Morbi sed lobortis enim.</p><blockquote><p>THIS IS A QUOTE FELLAS</p></blockquote><p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec scelerisque fringilla gravida. Morbi dictum mauris a arcu rutrum sollicitudin. Morbi quis metus non nunc commodo molestie semper et mauris. Sed nunc ligula, varius suscipit lacinia et, tempus ac ipsum. Phasellus a felis tempus, varius risus eget, dictum nisl. Vestibulum varius mauris quis orci sollicitudin malesuada. Donec imperdiet tincidunt felis at scelerisque. Nunc nibh mauris, elementum at purus et, aliquet iaculis metus. Praesent placerat id arcu efficitur tempus. Fusce eleifend accumsan libero at pretium. Ut pharetra velit non nisi luctus, nec laoreet nunc egestas. Mauris ut elementum libero. Cras ut erat rhoncus purus faucibus malesuada non vitae dui. Ut eu quam placerat felis sagittis venenatis. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p><pre><code><p>switch (lines[i]){</p><p>case string s when s.StartsWith("*"):</p><p>Console.WriteLine("Create h2");</p></code></pre><p>Pellentesque bibendum lorem at luctus rutrum. Donec id orci mi. Mauris vel nibh ornare, efficitur magna et, vehicula justo. Donec malesuada dui nec dolor rutrum molestie. Duis ut ornare lectus, ut finibus dui. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Vestibulum non sem tellus. Nulla ut odio sed ligula euismod venenatis eu vel quam. Curabitur porttitor tellus est, eget tincidunt enim tristique sed. Maecenas aliquet volutpat sollicitudin.</p><p>Sed tincidunt eleifend erat ac iaculis. Aliquam interdum interdum eros eu aliquam. Sed lacinia congue aliquet. Cras vitae orci vitae diam congue tempus ornare nec justo. Sed imperdiet semper justo et dignissim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Maecenas sed leo pretium erat mattis dapibus. Nam eget sollicitudin ex, at egestas magna. Quisque sollicitudin, augue vitae sagittis cursus, nulla justo sollicitudin tellus, in feugiat lorem est quis sem. Etiam quis lacinia nulla. Fusce congue pulvinar dui eget ornare. Phasellus cursus condimentum faucibus. Sed sollicitudin, lectus ut rutrum feugiat, risus ligula pulvinar nunc, ac aliquam nibh nibh eu nunc. Ut aliquet at nibh sed ultricies. Sed nulla eros, placerat eget finibus vel, pellentesque convallis nulla. Sed finibus nisi enim, nec finibus velit ullamcorper nec.</p><h2> Summary</h2><p>This is a brief summary just to test stuff</p><p>Here I should post links that relate to the article</p><p>Learn more here:</p><ul><li><a href=" http://localhost:5074/scriban"> http://localhost:5074/scriban</a></li><li><a href=" http://localhost:5074/scriban"> http://localhost:5074/scriban</a></li><li><a href=" http://localhost:5074/scriban"> http://localhost:5074/scriban</a></li><li><a href=" http://localhost:5074/scriban"> http://localhost:5074/scriban</a></li></ul><p>Sources I used</p><ul><li><a href=" http://localhost:5074/scriban"> http://localhost:5074/scriban</a></li><li><a href=" http://localhost:5074/scriban"> http://localhost:5074/scriban</a></li><li><a href=" http://localhost:5074/scriban"> http://localhost:5074/scriban</a></li><li><a href=" http://localhost:5074/scriban"> http://localhost:5074/scriban</a></li></ul><p>Thanks for reading footer should always be here</p>
+</div>
+  </div>
+<
+  `
+
+let loadMainPage = () => {
+  document.querySelector("body").innerHTML = mainPage
+}
+
+let loadSamplePage = () => {
+  document.querySelector("body").innerHTML = samplePostPage
+}
+
+loadMainPage()
+
+  
+</script>
+<style>
+.style-menu{
+    position: fixed;
+    z-index: 100;
+    right: 12px;
+    top: 25vh;
+    width: fit-content;
+    padding: 12px;
+    background: var(--background-light-one);
+    border: 2px solid var(--background-light-three);
+    border-radius: 4px;
+}
+
+.style-menu-holder{
+    display:flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.picker-holder {
+
+}
+</style>

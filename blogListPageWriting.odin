@@ -16,7 +16,7 @@ writeBlogListPages :: proc (path: string, templatesPath: string, blogInfos: [dyn
         articleStr := `
             <article>
                 <header>%v</header>
-                <p>desc</p>
+                <p>%v</p>
                 <footer>
                 <span>%v</span>
                 <hr>
@@ -30,8 +30,9 @@ writeBlogListPages :: proc (path: string, templatesPath: string, blogInfos: [dyn
         dateStr := fmt.ctprintf("%v/%v/%v", item.date.month, item.date.day, item.date.year)
         link := strings.split(item.path, ".")[0]
         link = strings.concatenate({link,isLocal ? ".html" : ""})
+        desc := ""
 
-        postItem:cstring = fmt.ctprintf(articleStr, item.title, dateStr, math.ceil(f16(item.words)/220), item.author, link)
+        postItem:cstring = fmt.ctprintf(articleStr, item.title, desc, dateStr, math.ceil(f16(item.words)/220), item.author, link)
         textToWrite = strings.concatenate({textToWrite, string(postItem)})
     }
 

@@ -28,7 +28,10 @@ writeIndexPage :: proc (path: string, templatesPath: string, blogInfos: [dynamic
 
     moreBtnLinkStr := string(fmt.ctprintf(`<a href="./%v" class="button-primary">More..</a>`, isLocal ? "blog.html" : "blog"))
 
-    for item in blogInfos {
+    for item, index in blogInfos {
+        if index >= 3 {
+            break;
+        }
         dateStr := fmt.ctprintf("%v/%v/%v", item.date.month, item.date.day, item.date.year)
         // link := isLocal ? "link.html" : "link"
         link := strings.split(item.path, ".")[0]

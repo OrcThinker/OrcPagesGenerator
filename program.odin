@@ -29,7 +29,7 @@ date :: struct {
 fullpath := "C:\\Users\\Ramand\\Desktop\\rozkmina\\emacsRozkmina\\OrcThinkersBlogOrgFiles\\"
 blogBasePath := "C:\\Users\\Ramand\\Desktop\\rozkmina\\emacsRozkmina\\TestBlogGenerationSpot\\"
 layoutPath := "./Pages/layout.template.html"
-isLocal := true
+isLocal := false
 
 
 main :: proc() {

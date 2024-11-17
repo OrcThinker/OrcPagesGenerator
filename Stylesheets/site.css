@@ -304,3 +304,21 @@ img {
     width: fit-content;
     max-width: 100%;
 }
+
+.style-menu{
+    position: fixed;
+    z-index: 100;
+    right: 12px;
+    top: 25vh;
+    width: fit-content;
+    padding: 12px;
+    background: var(--background-light-one);
+    border: 2px solid var(--background-light-three);
+    border-radius: 4px;
+}
+
+.style-menu-holder{
+    display:flex;
+    flex-direction: column;
+    gap: 8px;
+}
