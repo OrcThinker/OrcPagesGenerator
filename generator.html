@@ -11,9 +11,35 @@
  </body>
 </html>
 <script>
-  var colorThemes = ["#000", "#333", "#666", "#999", "#aaa","#bbb","#ccc","#ddd"]
-  var curColorThemeId = 0
+  let bgColor = "#171717"
+  let bgLight1 = "#222"
+  let bgLight2 = "#252525"
+  let bgLight3 = "#454545"
+  let textColorLight = "#dbd49d"
+  let textColorNormal = "#faf4c6"
+  let text1 = "OrcThinker's"
+  let text2 = "Geekier every day"
+  let textHeader = "Hello"
+  let textBody = "I am the <b>Orc Thinker</b> and I am looking to better myself as a dev through writing this blog"
   let recolor = (pickerElement, cssVariableName) => {
+    if(cssVariableName == "--body-background"){
+        bgColor = pickerElement.value
+    }
+    else if(cssVariableName === "--background-light-one"){
+        bgLight1 = pickerElement.value
+    }
+    else if(cssVariableName === "--background-light-two"){
+        bgLight2 = pickerElement.value
+    }
+    else if(cssVariableName === "--background-light-three"){
+        bgLight3 = pickerElement.value
+    }
+    else if(cssVariableName === "--text-color-one"){
+        textColorLight = pickerElement.value
+    }
+    else if(cssVariableName === "--text-color-two"){
+        textColorNormal = pickerElement.value
+    }
     var bgPickerColor = pickerElement.value
     var r = document.querySelector(':root');
     r.style.setProperty(cssVariableName, bgPickerColor)
@@ -22,17 +48,61 @@
   let changeLogoText = (textNr, textElement) => {
       let elementToChange;
       if(textNr === 1)
+      {
           elementToChange = document.querySelector("#text-one")
+          text1 = textElement.value
+      }
       if(textNr === 2)
+      {
           elementToChange = document.querySelector("#text-two")
+          text2 = textElement.value
+      }
       if(textNr === 3)
+      {
           elementToChange = document.querySelector("#text-header")
+          textHeader = textElement.value
+      }
       if(textNr === 4)
+      {
           elementToChange = document.querySelector("#text-body")
-
-        elementToChange.innerHTML = textElement.value
+          textBody = textElement.value
+      }
+      elementToChange.innerHTML = textElement.value
           
   }
+
+let loadMainPage = () => {
+  document.querySelector("body").innerHTML = mainPage
+  setEditValue()
+}
+
+let loadSamplePage = () => {
+  document.querySelector("body").innerHTML = samplePostPage
+  setEditValue(false)
+}
+
+let setEditValue = (isMain = true) => {
+    if(isMain){
+      document.querySelector("#text-body").innerHTML = textBody
+      document.querySelector("#text-header").innerHTML = textHeader
+    }
+    document.querySelector("#text-two").innerHTML = text2
+    document.querySelector("#logo-text-two-input").value = text2
+    document.querySelector("#text-one").innerHTML = text1
+    document.querySelector("#logo-text-one-input").value = text1
+
+    document.querySelector("#header-text-input").value = textHeader
+    document.querySelector("#body-text-input").value = textBody
+
+    document.querySelector("#body-background-color-picker").value = bgColor
+    document.querySelector("#light-one-color-picker").value = bgLight1
+    document.querySelector("#light-two-color-picker").value = bgLight2
+    document.querySelector("#light-three-color-picker").value = bgLight3
+    document.querySelector("#text-color-one-picker").value = textColorLight
+    document.querySelector("#text-color-two-picker").value = textColorNormal
+}
+
+
 
   let mainPage = `
   <nav class="web-nav">
@@ -158,7 +228,8 @@ let samplePostPage = `
   <nav class="web-nav">
     <div class="website-logo">
 <a href="./index.html">
-        <b>OrcThinker's</b> Geekier every day
+        <b id="text-one">OrcThinker's</b>
+        <span id="text-two">Geekier every day</span>
       </a>
     </div>
     <ul>
@@ -229,39 +300,5 @@ let samplePostPage = `
   </div>
 <
   `
-
-let loadMainPage = () => {
-  document.querySelector("body").innerHTML = mainPage
-}
-
-let loadSamplePage = () => {
-  document.querySelector("body").innerHTML = samplePostPage
-}
-
 loadMainPage()
-
-  
 </script>
-<style>
-.style-menu{
-    position: fixed;
-    z-index: 100;
-    right: 12px;
-    top: 25vh;
-    width: fit-content;
-    padding: 12px;
-    background: var(--background-light-one);
-    border: 2px solid var(--background-light-three);
-    border-radius: 4px;
-}
-
-.style-menu-holder{
-    display:flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.picker-holder {
-
-}
-</style>
