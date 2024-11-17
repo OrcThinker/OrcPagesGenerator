@@ -20,7 +20,7 @@
   let text1 = "OrcThinker's"
   let text2 = "Geekier every day"
   let textHeader = "Hello"
-  let textBody = "I am the <b>Orc Thinker</b> and I am looking to better myself as a dev through writing this blog"
+  let textBody = "I am the Orc Thinker and I am looking to better myself as a dev through writing this blog"
   let recolor = (pickerElement, cssVariableName) => {
     if(cssVariableName == "--body-background"){
         bgColor = pickerElement.value
@@ -102,6 +102,33 @@ let setEditValue = (isMain = true) => {
     document.querySelector("#text-color-two-picker").value = textColorNormal
 }
 
+let download = (filename, config, type="text/plain") => {
+  const a = document.createElement("a");
+  a.style.display = "none";
+  document.body.appendChild(a);
+  textToSave = "textBody:" + textBody 
+  textToSave += "\ntextHeader:" + textHeader 
+  textToSave += "\ntext1:" + text1
+  textToSave += "\ntext1:" + text2 
+  textToSave += "\nbgColor:" + bgColor 
+  textToSave += "\nbgLight1:" + bgLight1 
+  textToSave += "\nbgLight2:" + bgLight2 
+  textToSave += "\nbgLight3:" + bgLight3 
+  textToSave += "\ntextColorLight:" + textColorLight 
+  textToSave += "\ntextColorNormal:" + textColorNormal
+
+  a.href = window.URL.createObjectURL(
+    new Blob([textToSave], { type })
+  );
+
+  a.setAttribute("download", filename);
+
+  a.click();
+
+  window.URL.revokeObjectURL(a.href);
+  document.body.removeChild(a);
+}
+
 
 
   let mainPage = `
@@ -170,6 +197,16 @@ let setEditValue = (isMain = true) => {
       <span class="picker-holder">
         <label for="load-sample">Body text</label>
         <button id="load-sample" onclick="loadSamplePage()">Load sample</button>
+      </span>
+      <span class="picker-holder">
+        <button onclick="download('dupa.txt', 'config')">Download config</button>
+      </span>
+      <span class="picker-holder">
+        <a target="_blank" href="https://github.com/OrcThinker/OrcPagesGenerator/blob/main/OrcThinkerBlogGenerator.exe">
+          <button>
+            Download .exe
+          </button>
+        </a>
       </span>
     </div>
   </div>
@@ -290,6 +327,16 @@ let samplePostPage = `
       <span class="picker-holder">
         <label for="load-sample">Body text</label>
         <button id="load-sample" onclick="loadSamplePage()">Load sample</button>
+      </span>
+      <span class="picker-holder">
+        <button onclick="download('dupa.txt', 'config')">Download config</button>
+      </span>
+      <span class="picker-holder">
+        <a target="_blank" href="https://github.com/OrcThinker/OrcPagesGenerator/blob/main/OrcThinkerBlogGenerator.exe">
+          <button>
+            Download .exe
+          </button>
+        </a>
       </span>
     </div>
   </div>
